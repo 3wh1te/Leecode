@@ -2,6 +2,54 @@
 
 class Solution:
     def findMedianSortedArrays(self, nums1, nums2) -> float:
+        # 保证n > m
+        len1 = len(nums1)
+        len2 = len(nums2)
+        if len1 >= len2:
+            l = len2
+            len2 = len1
+            len1 = l
+            nums = nums2
+            nums2 = nums1
+            nums1 = nums
+
+        s = 0
+        n = len1
+        m = len2
+
+        while True:
+            i = int((s + n)/2)
+            j = int((m+len1+1)/2 - i)
+
+            if i > 0 and nums1[i - 1] > nums2[j]:
+                n = i - 1
+            elif i < n and nums2[j - 1] > nums1[i]:
+                s = i + 1
+            else:
+                if i == 0 or i == n:
+                    if (n + m) % 2 == 1:
+                        return nums2[j]
+                    else:
+                        return (nums2[j] + nums2[j - 1]) / 2
+                if j == 0:  # 因为 n<m 所以j=0，i一定为m,且n=m 或 m-1
+                    if (n + m) % 2 == 0:
+                        return (nums1[m - 1] + nums2[0]) / 2
+                    else:
+                        return nums2[0]
+                if j == m:
+                    if (n + m) % 2 == 0:
+                        return (nums1[0] + nums2[m - 1]) / 2
+                    else:
+                        return nums2[m - 1]
+                if (m + n) % 2 == 1:
+                    return max(nums1[i - 1], nums2[j - 1])
+                else:
+                    return (max(nums1[i - 1], nums2[j - 1]) + min(nums1[i], nums2[j])) / 2
+
+
+
+
+    def myFindMedianSortedArrays(self, nums1, nums2) -> float:
 
         len1 = len(nums1)
         len2 = len(nums2)
@@ -109,5 +157,7 @@ class Solution:
 if __name__ == '__main__':
     nums1 = [1,2]
     nums2 = [3,4,5,6]
+    nums1 = [1,3]
+    nums2 = [2]
     s = Solution()
     print(s.findMedianSortedArrays(nums1,nums2))
