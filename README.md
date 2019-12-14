@@ -48,8 +48,108 @@
 
   ### 15. 3Sum（三数之和）
 
-  ### 18. Divide（÷）
+  ### 18. Divide Two Integers
 
-  
+  #### 解题思路
 
+  ##### 自己的思路
+
+  首先就要确定符号，同号正，异号负。
+
+  其次判定一下特殊情况，溢出的情况-2<sup>32</sup>和-1的时候，返回2<sup>31</sup>- 1
+
+  先每次翻倍去靠近被除数，也就是 division += division，2倍4倍8倍16倍32倍……当大于被除数的时候停止
+
+  利用右移操作回到上一步的倍数 division = division >> 1，从division 一半开始，用距离distance表示每次移动的距离，distance = division >> 1，靠近被除数，division = division + distance ,之后每次distance减半。
+
+  当大于被除数就减，小于被除数就加，不断靠近被除数，知道这distance等于1倍的除数，就停止，最终得到的值如果大于被除数，那么这个倍数-1就是结果，如果小于，那么这个值就是结果。
+
+  ##### 举例：
+
+  91 7
+
+  同号为+，没有溢出
+
+  开始翻倍 7 14 28 56 112，此时112大于91，停止，此时为16倍
+
+  回到56，倍数为8，distance为28，开始靠近56小于91下一个是46+28=84，倍数为12倍，84小于91下一个是84+14 = 98，倍数为14倍，98大于91，下一个是98-7=91，倍数为13倍，7刚好是为一倍的除数，所以停止，此时91也刚好等于被除数，所以最终结果是13倍。
+
+  ### 31.  Next Permutation
+
+  ### 22. Generate Parentheses
+
+  #### 解题思路
+
+  ##### 自己思路
+
+  先产生所有可能的括弧，再验证，删除不合格的括弧。
+
+  验证括弧合格的思路：维护一个变量x，按顺序遍历括弧，遇到（就+1，遇到）就-1，如果值出现负数，该括弧不合格，遍历结束，如果最后x不等于0，也不合格，等于0就是合格的。
+
+  ##### 官方思路
+
+  递归产生括弧
+
+  #### 代码
+
+
+  ~~~
+  class Solution:
+    def generateParenthesis(self, n: int):
+        p = '()'
+        res = []
+        index = []
   
+        n = 2*n
+        for i in range(n):
+            if i < n/2:
+                index.append(1)
+            else:
+                index.append(0)
+  
+        while index[-1] < 2:
+            s = ''
+            for i in range(n):
+                s += p[index[i]]
+            res.append(s)
+            col = 0
+            while col < n - 1 and index[col] == 1:
+                index[col] = 0
+                col += 1
+            index[col] += 1
+            while sum(index) != n/2:
+                col = 0
+                while col < n - 1 and index[col] == 1:
+                    index[col] = 0
+                    col += 1
+                index[col] += 1
+  
+        res_last = []
+        for s in res:
+            if self.is_valid_parenthese(s):
+                res_last.append(s)
+        return res_last
+  
+    def is_valid_parenthese(self,s: str):
+        if s[0] == ')':
+            return False
+        stack = ''
+        for ss in s:
+            if ss == '(':
+                stack += ss
+            elif stack != '':
+                stack = stack[:-1]
+            else:
+                stack += ss
+        if stack == '':
+            return True
+                
+  ~~~
+
+  ### 33.Search in Rotated Sorted Array
+
+  #### 解题思路
+
+  ##### 自己思路
+
+  简答的说就是，先找到分界点的位置，然后看target在哪一边，设置好right和left，进行二分搜索。

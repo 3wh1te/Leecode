@@ -50,6 +50,16 @@ class Solution:
         if stack == '':
             return True
 
+    def valid(self,A):
+        bal = 0
+        for c in A:
+            if c == '(':
+                bal += 1
+            else:
+                bal -= 1
+            if bal < 0: return False
+        return bal == 0
+
 
 
 
@@ -57,3 +67,4 @@ class Solution:
 
 if __name__ == '__main__':
     print(Solution().generateParenthesis(3))
+    print(Solution().valid(')))((('))
